@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -39,21 +40,45 @@ public:
     Node<T>* getHead(){return head;}
 
     void pushFront(T data){
-        Node<T>* newNode(data);
+        auto *newNode = new Node<T>(data);
         newNode->setNext(head);
         head = newNode;
     }
+
     void pushBack(T data){
         auto *newNode = new Node<T>(data);
 
-        Node<T>* last = head;
+        //set pointer to head
+        Node<T>* last;
+
         if(head->getNext() == NULL){
-            head->setData(data);
+            last = head;
+            head->setData(data);  // head data = 3
         }
+
+        //get last to point to last node
         while(last->getNext() != NULL){
-            last = last->getNext();
+            last = last->getNext();  // last points to second empty node
         }
         last->setNext(newNode);
+    }
+
+    void insert(Node<T>* const& prevNode, T data){
+        auto *newNode = new Node<T>(data);
+        newNode->setNext(prevNode->getNext());
+        prevNode->setNext(newNode);
+
+    }
+
+    Node<T>* getPrevNode(T data){
+        Node<T>* prevNode = head;
+
+        while(prevNode->getNext() != NULL){
+            if (prevNode->getData() == data){
+                return prevNode;
+            }
+            prevNode = prevNode->getNext();
+        }
     }
 };
 
@@ -61,21 +86,27 @@ template<typename DLL, typename T>
 void print(MyLinkedList<DLL> dll){
     Node<T> *node;
     node = dll.getHead();
-    while (node->getNext() != NULL){
+    while (node->getData() != NULL){
         cout << node->getData() << endl;
         node = node->getNext();
     }
 }
 
+
 int main() {
-    Node<int> head(10);
-    Node<int> middle(20);
-    Node<int> tail(30);
+//    Node<int> head(10);
+//    Node<int> middle(20);
+//    Node<int> tail(30);
 
     MyLinkedList<int> intList;
     intList.pushBack(3);
-    intList.pushBack(4);
+    intList.pushFront(1);
+    intList.insert(intList.getPrevNode(1), 2);
     print<int, int>(intList);
+
+    MyLinkedList<string> stringList;
+    stringList.pushBack(reinterpret_cast<const char *>('c'));
+    print<string, string>(stringList);
     return 0;
 }
 
